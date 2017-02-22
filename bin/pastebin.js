@@ -19,7 +19,7 @@ var conf = require('../lib/config');
  */
 function Pastebin(config) {
     if (typeof config === 'string') {
-        config = { api_dev_key : config };
+        config = {api_dev_key : config};
     }
     this.config = _.extend(conf.defaults, config);
 }
@@ -87,7 +87,7 @@ Pastebin.prototype.createPaste = function (text, title, format, privacy, expirat
         p.api_paste_private = privacy;
         if (privacy === 0 || privacy === 1) {
             p.api_paste_private = privacy;
-        } else if (privacy === 2 || privacy === 3) {
+        } else if (privacy === 2 || privacy === 3 || privacy === 4) {
             if (this.config.api_user_key) {
                 p.api_user_key = this.config.api_user_key;
             } else if (this.config.api_user_name !== null && this.config.api_user_password !== null) {
@@ -122,6 +122,10 @@ Pastebin.prototype.createPaste = function (text, title, format, privacy, expirat
       // Paste privacy 3 = Public, under user
       if (p.api_paste_private === 3) {
         p.api_paste_private = 0;
+      }
+      // Paste privacy 4 = Unlisted, under user
+      if (p.api_paste_private === 4) {
+        p.api_paste_private = 1;
       }
       return this._postApi(conf.net.protocol + conf.net.base + conf.net.endpoint.post, p);
     }
@@ -435,7 +439,7 @@ Pastebin.prototype._postApi = function (path, params) {
     return method.post(path, params);
 };
 
-/***************************************************
+/** *************************************************
  * Synchronous methods
  ***************************************************/
 
